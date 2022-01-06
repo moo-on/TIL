@@ -58,3 +58,81 @@ prefix를 하나 씩 늘릴 때마다 호스트 수가 절반으로 줄면서 �
 192.168.100.0 ~ 192.168.100.1s
 
 192.168.100.16 ~ 192.168.100.31
+
+### IP프로토콜
+
+**비연결형 서비스**
+
+상위 계층인 TCP 등에서 신뢰성을 보장해야한다.
+
+**IP헤더**
+
+32bit = 4byte = 1word → 총 5개의 word로 이루어져있다.
+
+마지막줄은 필수가 아니고, IHL을 확인하여 유/무 파악 가능
+
+![https://user-images.githubusercontent.com/70089259/148334158-3490fd38-34a1-4d0b-9ad5-92f14b963af3.png](https://user-images.githubusercontent.com/70089259/148334158-3490fd38-34a1-4d0b-9ad5-92f14b963af3.png)
+
+version
+
+IHL : 옵션 여부를 알 수 있다. 5word일 경우가 없음
+
+TOS :  서비스 성능 측정
+
+Total Length(header length + data length) : 20~1500의 범위의 값, 20은 헤더의 기리이
+
+Identification(식별번호)
+
+Flags(DF/MF) : DF는 패킷 분할 금지, MF는 0일 경우 마지막 패킷
+
+Fragment Offset(순서번호) : 분할 전 상대적인 위치 정보, 8 바이트의 배수로 지정
+
+TTL(패킷 생존 시간)
+
+Protocol :TCP, UDP, ICMP 등
+
+Header Checksum : IP에 관해서만 따진다
+
+Source address : 송신지 IP 주소
+
+destination address : 수신지 IP 주소
+
+options + pad : 없을 수 있음
+
+**프레임**
+
+preamble(8) Destination Address(6) Source Address(6) Type(2) Data(0~1500) pad(0~46) checksum(4)
+
+**IPv6**
+
+16바이트, 128비트로 구성. 2바이트 8개 = 16바이트이다.
+
+2바이트는 4개의 16진수로 표현
+
+필드의 표기는 4개의 16진수로 표현
+
+표기는 왼쪽 0은 생략가능 00ff → ff
+
+연속된 필드가 0일 경우 ‘ :: ’ 으로 표기 가능하다.
+
+**IPv4 IPv6 호환 방식**
+
+이중 스택 : 헤더 2개 장착하기
+
+터널링 : 특정 IP만 지날갈 수있는 네트워크의경우 특정 IP안에 집어넣어서 통과한다
+
+헤더변환 : 수신 측에 알맞게 헤더 변환을 한다.
+
+### 프로토콜 기초
+
+정보프레임 I :  상위 계층이 전송 요구한 데이터를 송신하는 용도, 순서번호, 송수신 호스트 정보 등
+
+긍정프레임 ACK : 전송한 데이터가 올바르게 송신되었는지
+
+부정프레임 NAK : 전송 데이터가 오류가 있어서 재전송 요청하는 용도
+
+**피기배킹**
+
+정보프레임 긍정프레임 따로 따로 패킷을 보내면 복잡하므로 둘이 합쳐서 보내는 개념
+
+표기법 : I(m, n)
