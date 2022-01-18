@@ -1,0 +1,30 @@
+### 접근제어리스트 ACL
+
+- 리눅스는 멀티 유저 환경이다.
+- ACL을 사용해 세밀한 설정을 할 수 있다.
+- 소유자나 소유그룹 이외에 특정 사용자/그룹에 권한을 따로 설정할 수 있다.
+- ls -l로 확인 시 권한 맨 끝에 닷(.)이 아니라 (+)로 표시되어있다, 소유 그룹 권한이 다르게 표시될수 있음
+- **#setfacl [option] ENTRY:NAME:PERMS file-name**
+    - option [-m] 추가, 수정시 사용하는 옵션
+    - ENTRY [u] 소유자의 권한을 바꾸고 싶을 때 NAME을 비우고 u::<perm>
+        - u:<username>:<perm> 특정 사용자의 권한을 설정할 때
+        - u대신 g를 쓰면 그룹의 경우
+    - ENTRY [m] 마스크를 세울 때 NAME을 비우고 #setfacl -m m::rw- <file>
+        - mask값은 특정 사용자, 소유 그룹 특정 그룹에 부여할 수 있는 최대 권한을 의미한다.
+        - 파일 소유자와 기타소유자의 권한은 제한하지 않는다.
+        - effective는 최대 권한을 넘길 경우 뜬다.
+- **#setfacl -m d:u:<user_name>:<perm> dir**
+    - 권한 추가
+    - 디렉토리 하위에 생성시 기본으로 적용될 ACL적용, 앞에 d인자 새로 추가된다.
+    - 소유자의 권한이 아닌 그룹의 권한의경우 g로 파라미터를 바꿔준다
+    - d:m:<perm> <dir> 기본 마스크 설정은 name을 ::으로 생략하지 않는다.
+    - 파일 생성 시 소유자와 기타사용자는 defaultACL의 영향이 아닌 umask값의 영향을 받아서 그대로 내려온다
+    - defaultmask값에서 실행권한이 빠진상태로 file이 만들어진다. 해당파일이 실행파일인지에 대한 판단을 할수가없다
+    - 특정사용자 소유그룹 특정그룹이 defaultACL이 적용된다.
+- **#setfacl -x u:user2, g:user2 dirA/fileA**
+    - 권한 삭제
+- **#getfacl anaconda-ks.cfg**
+    - 상세 정보 확인
+- **ex)**
+    - #setfacl -m u:user1:rwx anaconda-ks.cfg
+    - #chmod에서 setuid옵션 추가하면 flag에 옵션에 추가되어있다.
